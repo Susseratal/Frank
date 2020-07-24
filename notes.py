@@ -3,5 +3,3 @@ class Notebook(object):
         self.notes = []
     def addnote(self, value):
         self.notes.append(value)
-        
-        

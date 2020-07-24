@@ -61,6 +61,15 @@ async def main():
         time.sleep(0.3)
         delay_print ("To delete your data, type 'delete data'")
 
+    def read_multiline_input():
+        rtn = []
+        while True:
+            line = input ()
+            if line.strip() == "":
+                break
+            rtn.append(line)
+        return rtn
+
     baseconfigfilename = os.path.join(os.path.dirname(sys.argv[0]), "savedata_")
 
     delay_print("powering up.... ")
@@ -95,7 +104,7 @@ async def main():
         settings["password"]=password
         configfilename = (baseconfigfilename + username)
         save_config()
-        show_help()
+        print ("To see the help message, type 'Show help' ")
         
     loop = asyncio.get_event_loop()
     while True:
@@ -107,7 +116,7 @@ async def main():
 
         elif command == "make note":
             delay_print("What would you like me to remember " + username + "? ")
-            note = input ("")
+            note = read_multiline_input()
             notebook.addnote(note)
             save_config()
 
@@ -133,13 +142,14 @@ async def main():
             print (" ")
             delay_print ("Your notes:")
             for note in notebook.notes:
-                delay_print (note)
-            print (" ")
+                for line in note:
+                    print (line)
+                print (" ")
 
         elif command == "delete note":
             notenumber = 1
             for note in notebook.notes:
-                delay_print (str(notenumber) + ". " + note)
+                delay_print (str(notenumber) + ". " + note[0])
                 notenumber = notenumber +1
             delete = int(input("Which number note do you want to delete? "))-1
             del notebook.notes[delete]
