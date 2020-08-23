@@ -6,6 +6,9 @@ import time
 import sys
 import getpass
 import asyncio
+
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from calculator import calculator
 from notes import Notebook
 notebook = Notebook()
@@ -86,7 +89,7 @@ async def main():
                 username=settings["username"]
                 password=settings["password"]
                 notebook.notes=settings["notes"]
-                while read_password() != password:
+                while not(check_password_hash(password, read_password())):
                     print ("incorrect")
                 break
             elif chooseuser == "cancel":
@@ -101,11 +104,11 @@ async def main():
         username = input ("Please choose a username: ")
         settings["username"]=username
         password = getpass.getpass(prompt="Password: ", stream=None)
-        settings["password"]=password
+        settings["password"]=generate_password_hash(password)
         configfilename = (baseconfigfilename + username)
         save_config()
         print ("To see the help message, type 'Show help' ")
-        
+
     loop = asyncio.get_event_loop()
     while True:
         delay_print("What do you want to do: ")
@@ -137,7 +140,7 @@ async def main():
             mem = str(input ("What would you like me to remember: "))
             wait = int(input ("How long would you like me to wait: "))
             asyncio.create_task (reminder(wait, mem))
-        
+
         elif command == "show notes":
             print (" ")
             delay_print ("Your notes:")
@@ -165,7 +168,7 @@ async def main():
             check = input ("")
             check = check.lower()
             if check == ("y"):
-                while read_password() != password:
+                while not(check_password_hash(password, read_password())):
                     print ("incorrect")
                 delay_print ("Deleting user: " + username + "...")
                 time.sleep(0.3)
@@ -180,5 +183,5 @@ async def main():
 
         else:
             delay_print ("Sorry, " + username + ", I didn't understand that.")
-            
+
 asyncio.run(main())
