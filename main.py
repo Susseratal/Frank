@@ -79,7 +79,7 @@ async def main():
 
     if enter == "returning":
         while True:
-            chooseuser = input ("Please enter a username(case sensitive): ")
+            chooseuser = input ("Please enter a username: ").title()
             configfilename = (baseconfigfilename + chooseuser)
             if os.path.isfile(configfilename):
                 settings=json.load(open(configfilename))
@@ -98,7 +98,7 @@ async def main():
 
     elif enter =="new":
         settings={}
-        username = input ("Please choose a username: ")
+        username = input ("Please choose a username: ").title()
         settings["username"]=username
         password = getpass.getpass(prompt="Password: ", stream=None)
         settings["password"]=password
@@ -174,7 +174,10 @@ async def main():
             else:
                 delay_print("Understood")
 
-        elif command == "quit":
+        elif command in ["help", "show help"]:
+            show_help()
+
+        elif command in ["quit", "shut down"]:
             delay_print ("Powering down...")
             sys.exit()
 
